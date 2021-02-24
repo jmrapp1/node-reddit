@@ -30,6 +30,8 @@
     "@types/mongodb": "^3.6.8",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "email-validator": "^2.0.4",
     "helmet": "^4.4.1",
     "luxon": "^1.26.0",

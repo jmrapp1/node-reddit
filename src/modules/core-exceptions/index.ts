@@ -1,1 +1,1 @@
-export * from './InvalidArgumentException';
+export * from './InvalidArgumentsException';

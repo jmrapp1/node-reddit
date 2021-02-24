@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { Entity, EntityProps } from '../../core-domain';
-import { InvalidArgumentException } from '../../core-exceptions';
+import { InvalidArgumentsException } from '../../core-exceptions';
 import { isEmail, isEmpty, minLength } from '../../core-guards';
 
 export interface UserProps extends EntityProps {
@@ -13,21 +13,21 @@ export interface UserProps extends EntityProps {
 
 export class UserEntity extends Entity<UserProps> {
 
-    constructor(props: UserProps) {
-        super(props);
+    constructor(props: UserProps, skipValidation = false) {
+        super(props, skipValidation);
     }
 
     validateProps(props: UserProps): void {
         if (isEmpty(props.username) || !minLength(props.username, 4) || props.username.indexOf(' ') > 0) {
-            throw new InvalidArgumentException('Please provide a valid username');
+            throw new InvalidArgumentsException('Please provide a valid username');
         } else if (isEmpty(props.password) || !minLength(props.password, 6)) {
-            throw new InvalidArgumentException('Please provide a valid password');
+            throw new InvalidArgumentsException('Please provide a valid password');
         } else if (!isEmail(props.email)) {
-            throw new InvalidArgumentException('Please provide a valid email');
+            throw new InvalidArgumentsException('Please provide a valid email');
         } else if (isEmpty(props.firstName)) {
-            throw new InvalidArgumentException('Please provide a valid first name');
+            throw new InvalidArgumentsException('Please provide a valid first name');
         } else if (isEmpty(props.lastName)) {
-            throw new InvalidArgumentException('Please provide a valid last name');
+            throw new InvalidArgumentsException('Please provide a valid last name');
         }
     }
 

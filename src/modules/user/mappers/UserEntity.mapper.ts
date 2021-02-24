@@ -19,7 +19,7 @@ export class UserEntityMapper extends EntityMapper<UserEntity, UserOrmEntity> {
         return ormEntity;
     }
 
-    toDomainEntity(orm: UserOrmEntity): UserEntity {
+    toDomainEntity(orm: UserOrmEntity, skipValidation = false): UserEntity {
         return new UserEntity({
             id: new Id(orm.id.toString()),
             username: orm.username,
@@ -29,7 +29,7 @@ export class UserEntityMapper extends EntityMapper<UserEntity, UserOrmEntity> {
             lastName: orm.lastName,
             createdAt: new DateVO(orm.createdAt),
             updatedAt: new DateVO(orm.updatedAt)
-        })
+        }, skipValidation)
     }
 
 }

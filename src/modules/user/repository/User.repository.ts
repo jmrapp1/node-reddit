@@ -1,6 +1,6 @@
 import { TypeOrmRepository } from '../../repository-typeorm';
 import { LogBuilder } from '../../core-logging';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { UserOrmEntity } from '../entities/User.orm-entity';
@@ -12,7 +12,7 @@ export class UserRepository extends TypeOrmRepository<UserEntity, UserEntityMapp
 
     constructor(
         @InjectRepository(UserOrmEntity)
-        repository: Repository<UserOrmEntity>) {
+        repository: MongoRepository<UserOrmEntity>) {
         super('User',
             new LogBuilder().withName('UserRepository').withColor('#00C2D1').build(),
             repository, new UserEntityMapper()

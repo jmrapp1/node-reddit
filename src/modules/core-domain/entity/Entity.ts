@@ -1,4 +1,5 @@
 import { DateVO, Id } from '../valueObject';
+import { UserProps } from '../../user/entities/User.entity';
 
 export interface EntityProps {
     readonly id: Id;
@@ -10,9 +11,11 @@ export abstract class Entity<Props extends EntityProps> {
 
     private readonly _props: Props;
 
-    constructor(props: Props) {
-        this.validateDefined(props);
-        this.validateProps(props);
+    constructor(props: Props, skipValidation = false) {
+        if (!skipValidation) {
+            this.validateDefined(props);
+            this.validateProps(props);
+        }
         this._props = props;
     }
 

@@ -1,5 +1,5 @@
 import { TypeOrmEntity } from './TypeOrmEntity';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, MongoRepository, Repository } from 'typeorm';
 import { DomainRepository, EntityMapper, QueryInterface } from '../core-repository';
 import { Entity } from '../core-domain';
 import { Logger } from '../core-logging';
@@ -15,13 +15,13 @@ export abstract class TypeOrmRepository<E extends Entity<any>, M extends EntityM
 
     protected _entityName: string;
     protected _logger: Logger;
-    protected _repository: Repository<TypeOrmEntity<E>>;
+    protected _repository: MongoRepository<TypeOrmEntity<E>>;
     protected _entityMapper: M;
 
     @Inject()
     private _eventEmitter: EventEmitter2;
 
-    constructor(entityName: string, logger: Logger, repository: Repository<TypeOrmEntity<E>>, entityMapper: M) {
+    constructor(entityName: string, logger: Logger, repository: MongoRepository<TypeOrmEntity<E>>, entityMapper: M) {
         this._entityName = entityName;
         this._logger = logger;
         this._repository = repository;
@@ -30,7 +30,12 @@ export abstract class TypeOrmRepository<E extends Entity<any>, M extends EntityM
 
     async find(query: TypeOrmQueryInterface<TypeOrmEntity<E>>): Promise<E[]> {
         const res = await this._repository.find(query.query);
-        return res.map(this._entityMapper.toDomainEntity);
+        return res.map(r => this._entityMapper.toDomainEntity(r, true));
+    }
+
+    async findOne(query: TypeOrmQueryInterface<TypeOrmEntity<E>>): Promise<E> {
+        const res = await this._repository.findOne(query.query);
+        return this._entityMapper.toDomainEntity(res, true);
     }
 
     async findById(id): Promise<E | undefined> {
@@ -40,13 +45,13 @@ export abstract class TypeOrmRepository<E extends Entity<any>, M extends EntityM
             this._logger.error(`More than one '${this._repository.metadata.name}' entity found with same ID '${id}'`);
             throw new InternalServerErrorException();
         }
-        return this._entityMapper.toDomainEntity(res[0]);
+        return this._entityMapper.toDomainEntity(res[0], true);
     }
 
     async insert(entity: E): Promise<E> {
         const orm = this._entityMapper.toOrmEntity(entity);
         const res = await this._repository.save(orm);
-        const domain = this._entityMapper.toDomainEntity(res);
+        const domain = this._entityMapper.toDomainEntity(res, false);
         this._eventEmitter.emit(`${this._entityName}.created`, new EntityEvent<E>(entity));
         return domain;
     }
@@ -54,7 +59,7 @@ export abstract class TypeOrmRepository<E extends Entity<any>, M extends EntityM
     async save(entity: E): Promise<E> {
         const orm = this._entityMapper.toOrmEntity(entity);
         const res = await this._repository.save(orm);
-        const domain = this._entityMapper.toDomainEntity(res);
+        const domain = this._entityMapper.toDomainEntity(res, false);
         this._eventEmitter.emit(`${this._entityName}.updated`, new EntityEvent<E>(entity));
         return domain;
     }

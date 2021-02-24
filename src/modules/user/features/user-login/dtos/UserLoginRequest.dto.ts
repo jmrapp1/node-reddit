@@ -1,11 +1,12 @@
+import { ToLower } from '../../../../core-guards';
+import { MinLength } from 'class-validator';
 
 export class UserLoginRequestDto {
 
-    readonly username: string;
-    readonly password: string;
+    @ToLower()
+    @MinLength(4, { message: 'The username is too short.' })
+    username: string;
 
-    constructor(username: string, password: string) {
-        this.username = username;
-        this.password = password;
-    }
+    @MinLength(6, { message: 'The password is incorrect.' })
+    password: string;
 }

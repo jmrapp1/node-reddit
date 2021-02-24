@@ -10,8 +10,8 @@ export class UserRegisterController {
 
     @Post()
     @HttpCode(201)
-    async registerUser(@Body() regReq: UserRegisterRequestDto) {
-        return this.registerService.registerUser(regReq);
+    async registerUser(@Body() regReq: UserRegisterRequestDto): Promise<any> {
+        await this.registerService.registerUser(regReq);
     }
 
 }

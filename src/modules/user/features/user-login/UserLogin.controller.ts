@@ -9,8 +9,8 @@ export class UserLoginController {
     }
 
     @Post('/auth')
-    @HttpCode(201)
-    async registerUser(@Body() loginReq: UserLoginRequestDto) {
+    @HttpCode(200)
+    async loginUser(@Body() loginReq: UserLoginRequestDto) {
         return this._userLoginService.loginUser(loginReq);
     }
 

@@ -1,5 +1,5 @@
 import { Entity, EntityProps } from '../../core-domain';
-import { InvalidArgumentException } from '../../core-exceptions';
+import { InvalidArgumentsException } from '../../core-exceptions';
 import { isEmpty } from '../../core-guards';
 
 export interface TestProps extends EntityProps {
@@ -14,7 +14,7 @@ export class TestEntity extends Entity<TestProps> {
 
     public validateProps(props: TestProps): void {
         if (isEmpty(props.message)) {
-            throw new InvalidArgumentException('Please provide a valid test message');
+            throw new InvalidArgumentsException('Please provide a valid test message');
         }
     }
 
